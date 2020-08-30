@@ -1,0 +1,30 @@
+{
+  "name": "easy-form-value",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@babel/core": "^7.11.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@types/jest": "^26.0.10",
+    "@types/react": "^16.9.48",
+    "@types/react-dom": "^16.9.8",
+    "babel-jest": "^26.3.0",
+    "jest": "^26.4.2",
+    "parcel": "^1.12.4",
+    "typescript": "^4.0.2"
+  }
+}
