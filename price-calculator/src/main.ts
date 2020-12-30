@@ -1,12 +1,12 @@
 type Price = number;
 type Users = number;
 
-type Config = {
+type Plan = {
   readonly users: Users;
   readonly price: Price;
 };
 
-const configs: readonly Config[] = [
+const plans: readonly Plan[] = [
   {
     // 10
     users: 10,
@@ -36,64 +36,80 @@ const configs: readonly Config[] = [
   return b.users - a.users;
 });
 
+type Result = {
+  readonly price: Price;
+  readonly composition: readonly Plan[];
+};
+
 /**
  * 結果を格納する
  *
  * 10ユーザー -> 100円
  *
- * TODO: 最適解の選び方（20ユーザ x 2, 10ユーザ x 1みたいな）も保存しておきたい
  * TODO: buildCalculator(configs)(users) みたいな高階関数にしたい
  *
  */
-const res: Map<Users, Price> = new Map(
+const res: Map<Users, Result> = new Map(
   // 計算しなくてもわかるものは最初から入れておく
-  configs.map(({ price, users }) => [users, price])
+  plans.map(({ price, users }) => [
+    users,
+    { price, composition: [{ users, price }] },
+  ])
 );
 
-const calc = (users: Users): Price => {
+const calc = (users: Users): Result => {
   const cached = res.get(users);
 
   if (cached) {
     return cached;
   }
 
-  const updateCache = (price: Price) => {
-    const current = res.get(users) ?? Infinity;
-    console.log(`${current} vs. ${price}`);
-    res.set(users, Math.min(current, price));
+  const updateCache = (result: Result) => {
+    const current = res.get(users);
+    console.log(result);
+
+    if (current == undefined) {
+      res.set(users, result);
+      return;
+    }
+
+    if (result.price < current.price) {
+      res.set(users, result);
+      return;
+    }
   };
 
   const aux = (
     currentIndex: number,
     accPrice: Price,
     restUsers: Users,
-    selectedConfigs: readonly Config[]
+    selectedPlans: readonly Plan[]
   ): void => {
     if (restUsers <= 0) {
-      updateCache(accPrice);
+      updateCache({ composition: selectedPlans, price: accPrice });
       // console.log(JSON.stringify(selectedConfigs));
       return;
     }
 
-    const config = configs[currentIndex];
-    if (config == undefined) {
+    const plan = plans[currentIndex];
+    if (plan == undefined) {
       return;
     }
 
     // 現在見ている価格設定を採用する場合
     // 複数選択可能にしたいのでcurrentIndexは増やさない
-    aux(currentIndex, accPrice + config.price, restUsers - config.users, [
-      ...selectedConfigs,
-      config,
+    aux(currentIndex, accPrice + plan.price, restUsers - plan.users, [
+      ...selectedPlans,
+      plan,
     ]);
 
     // 現在見ている価格設定を採用しない場合
-    aux(currentIndex + 1, accPrice, restUsers, selectedConfigs);
+    aux(currentIndex + 1, accPrice, restUsers, selectedPlans);
   };
 
   aux(0, 0, users, []);
 
-  return res.get(users) ?? Infinity;
+  return res.get(users) ?? { price: Infinity, composition: [] };
 };
 
-console.log(calc(50));
+console.log(calc(40));
