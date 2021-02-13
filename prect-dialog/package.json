@@ -1,0 +1,19 @@
+{
+  "name": "preact-dialog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "snowpack dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "snowpack": "^3.0.11",
+    "typescript": "^4.1.5"
+  },
+  "dependencies": {
+    "preact": "^10.5.12"
+  }
+}
