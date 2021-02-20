@@ -1,5 +1,13 @@
+function waitForAnimationFrame(): Promise<void> {
+  return new Promise<void>((resolve) => {
+    window.requestAnimationFrame(() => {
+      resolve();
+    });
+  });
+}
+
 function trap(element: HTMLElement): void {
-  document.addEventListener("focusin", (e) => {
+  document.addEventListener("focusin", async (e) => {
     if (e.target == null) {
       return;
     }
@@ -10,13 +18,10 @@ function trap(element: HTMLElement): void {
     }
 
     element.setAttribute("tabindex", "0");
-    window.requestAnimationFrame(() => {
-      element.focus();
-
-      window.requestAnimationFrame(() => {
-        element.removeAttribute("tabindex");
-      });
-    });
+    await waitForAnimationFrame();
+    element.focus();
+    await waitForAnimationFrame();
+    element.removeAttribute("tabindex");
   });
 }
 
